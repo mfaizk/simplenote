@@ -12,23 +12,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool login(String email, String password) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    auth.signInWithEmailAndPassword(email: email, password: password);
-    if (auth.currentUser != null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   GlobalKey<FormState> key = GlobalKey<FormState>();
   String email;
   String password;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Consumer<ThemeDataProvider>(builder: (context, tdp, child) {
+    return SafeArea(child: Consumer2<ThemeDataProvider, FirebaseAuthHelper>(
+        builder: (context, tdp, fireAuthHelper, child) {
       return SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -195,9 +185,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: () {
                                   if (key.currentState.validate())
                                     key.currentState.save();
-                                  bool result =
-                                      login(this.email, this.password);
-                                  if (result == false) {
+                                  User user =
+                                      fireAuthHelper.loginWithEmailAndPass(
+                                          this.email, this.password);
+                                  if (user == null) {
                                     print('unable to login');
                                   }
                                 },
@@ -237,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              print('google');
+                                              fireAuthHelper.googleLogin();
                                             },
                                             child: FaIcon(
                                                 FontAwesomeIcons.google,
