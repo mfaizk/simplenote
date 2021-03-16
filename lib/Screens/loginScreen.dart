@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:simplenote/Helpers/firebaseAuthHelper.dart';
 import 'package:simplenote/Helpers/themeDataProvider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,7 +12,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool login(String email, String password) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    auth.signInWithEmailAndPassword(email: email, password: password);
+    if (auth.currentUser != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   GlobalKey<FormState> key = GlobalKey<FormState>();
+  String email;
+  String password;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -31,134 +46,254 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: MediaQuery.of(context).size.height * 0.6,
                 width: MediaQuery.of(context).size.width,
                 child: Container(
-                  color: Colors.white,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            MediaQuery.of(context).size.width * 0.05)),
-                    shadowColor: tdp.secondaryColor,
-                    color: tdp.primarColor,
-                    elevation: 5.0,
-                    clipBehavior: Clip.antiAlias,
-                    margin: EdgeInsets.fromLTRB(
-                        MediaQuery.of(context).size.width * 0.02,
-                        MediaQuery.of(context).size.width * 0.05,
-                        MediaQuery.of(context).size.width * 0.02,
-                        MediaQuery.of(context).size.width * 0.2),
-                    child: Form(
-                        key: key,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Divider(),
-                            Padding(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.03),
-                              child: TextFormField(
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(
-                                      MediaQuery.of(context).size.width * 0.03),
-                                  labelText: 'Email',
-                                  labelStyle: TextStyle(color: Colors.white),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.auto,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.white,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
+                  color: tdp.currentColorMode,
+                  child: SingleChildScrollView(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              MediaQuery.of(context).size.width * 0.05)),
+                      shadowColor: tdp.secondaryColor,
+                      color: tdp.primarColor,
+                      elevation: 5.0,
+                      clipBehavior: Clip.antiAlias,
+                      margin: EdgeInsets.fromLTRB(
+                          MediaQuery.of(context).size.width * 0.02,
+                          MediaQuery.of(context).size.width * 0.05,
+                          MediaQuery.of(context).size.width * 0.02,
+                          MediaQuery.of(context).size.width * 0.2),
+                      child: Form(
+                          key: key,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Divider(),
+                              Padding(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.03),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Enter valid Email';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (newValue) {
+                                    if (newValue != null) {
+                                      setState(() {
+                                        this.email = newValue.toString();
+                                      });
+                                    }
+                                  },
+                                  style: TextStyle(color: tdp.currentColorMode),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(
                                         MediaQuery.of(context).size.width *
                                             0.03),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.white,
+                                    labelText: 'Email',
+                                    labelStyle:
+                                        TextStyle(color: tdp.currentColorMode),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.auto,
+                                    errorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
                                     ),
-                                    borderRadius: BorderRadius.circular(
-                                        MediaQuery.of(context).size.width *
-                                            0.03),
-                                  ),
-                                  icon: Icon(
-                                    Icons.email,
-                                    color: Colors.white,
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: tdp.currentColorMode,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: tdp.currentColorMode,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                    ),
+                                    icon: Icon(
+                                      Icons.email,
+                                      color: tdp.currentColorMode,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Divider(),
-                            Padding(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.width * 0.03),
-                              child: TextFormField(
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(
-                                      MediaQuery.of(context).size.width * 0.03),
-                                  labelText: 'Password',
-                                  labelStyle: TextStyle(color: Colors.white),
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.auto,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.white,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
+                              Divider(),
+                              Padding(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.width * 0.03),
+                                child: TextFormField(
+                                  validator: (value) {
+                                    if (value.isEmpty) {
+                                      return 'Enter valid password';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (newValue) {
+                                    if (newValue != null) {
+                                      setState(() {
+                                        this.password = newValue.toString();
+                                      });
+                                    }
+                                  },
+                                  style: TextStyle(color: tdp.currentColorMode),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(
                                         MediaQuery.of(context).size.width *
                                             0.03),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.white,
+                                    labelText: 'Password',
+                                    labelStyle:
+                                        TextStyle(color: tdp.currentColorMode),
+                                    floatingLabelBehavior:
+                                        FloatingLabelBehavior.auto,
+                                    errorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.red,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
                                     ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: tdp.currentColorMode,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: tdp.currentColorMode,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          MediaQuery.of(context).size.width *
+                                              0.03),
+                                    ),
+                                    icon: Icon(
+                                      Icons.lock,
+                                      color: tdp.currentColorMode,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Divider(),
+                              MaterialButton(
+                                shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(
-                                        MediaQuery.of(context).size.width *
-                                            0.03),
+                                  MediaQuery.of(context).size.width * 0.03,
+                                )),
+                                color: tdp.tertiaryColor,
+                                onPressed: () {
+                                  if (key.currentState.validate())
+                                    key.currentState.save();
+                                  bool result =
+                                      login(this.email, this.password);
+                                  if (result == false) {
+                                    print('unable to login');
+                                  }
+                                },
+                                child: FittedBox(
+                                  alignment: Alignment.center,
+                                  fit: BoxFit.fill,
+                                  child: Text(
+                                    'Login',
+                                    style:
+                                        TextStyle(color: tdp.currentColorMode),
                                   ),
-                                  icon: Icon(
-                                    Icons.lock,
-                                    color: Colors.white,
-                                  ),
                                 ),
                               ),
-                            ),
-                            Divider(),
-                            MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * 0.03,
-                              )),
-                              color: tdp.tertiaryColor,
-                              onPressed: () {},
-                              child: FittedBox(
-                                alignment: Alignment.center,
-                                fit: BoxFit.fill,
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(color: Colors.white),
+                              Divider(),
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
+                                width: MediaQuery.of(context).size.width,
+                                color: tdp.primarColor,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.6,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      color: tdp.primarColor,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('google');
+                                            },
+                                            child: FaIcon(
+                                                FontAwesomeIcons.google,
+                                                color: tdp.currentColorMode),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('facebook');
+                                            },
+                                            child: FaIcon(
+                                                FontAwesomeIcons.facebook,
+                                                color: tdp.currentColorMode),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              print('twitter');
+                                            },
+                                            child: FaIcon(
+                                                FontAwesomeIcons.twitter,
+                                                color: tdp.currentColorMode),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.6,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      color: tdp.primarColor,
+                                      child: MaterialButton(
+                                        elevation: 0,
+                                        color: tdp.primarColor,
+                                        onPressed: () {},
+                                        child: FittedBox(
+                                          alignment: Alignment.bottomLeft,
+                                          fit: BoxFit.fill,
+                                          child: Text(
+                                            'skip',
+                                            style: TextStyle(
+                                                color: tdp.tertiaryColor),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                            Divider(),
-                            MaterialButton(
-                              hoverColor: tdp.primarColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.width * 0.03,
-                              )),
-                              onPressed: () {},
-                              child: FittedBox(
-                                alignment: Alignment.center,
-                                fit: BoxFit.fill,
-                                child: Text(
-                                  'Skip',
-                                  style: TextStyle(color: tdp.tertiaryColor),
-                                ),
+                              Divider(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
                               ),
-                            ),
-                          ],
-                        )),
+                            ],
+                          )),
+                    ),
                   ),
                 ),
               ),

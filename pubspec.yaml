@@ -33,6 +33,7 @@ dependencies:
   firebase_core: "^0.7.0"
   firebase_auth: "^0.20.1"
   lottie: ^1.0.1
+  font_awesome_flutter: ^8.12.0
 
 
 

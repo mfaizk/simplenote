@@ -1,19 +1,21 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseAuthHelper extends ChangeNotifier {
-  bool authState = false;
+  User user;
+  StreamSubscription authHelper;
 
-  bool authStateInit() {
+  FirebaseAuthHelper() {
     FirebaseAuth auth = FirebaseAuth.instance;
-    auth.authStateChanges().listen((User user) {
-      if (user == null) {
-        this.authState = false;
-      } else {
-        this.authState = true;
-      }
+    authHelper = auth.authStateChanges().listen((User user) {
+      this.user = user;
+      notifyListeners();
     });
-    notifyListeners();
-    return this.authState;
+  }
+
+  isAuthenticated() {
+    return this.user != null;
   }
 }

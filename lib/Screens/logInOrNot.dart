@@ -15,10 +15,11 @@ class _LogInOrNotState extends State<LogInOrNot> {
   Widget build(BuildContext context) {
     return Consumer2<ThemeDataProvider, FirebaseAuthHelper>(
       builder: (context, tdp, fAuthHelper, child) {
-        if (fAuthHelper.authState) {
+        if (fAuthHelper.isAuthenticated()) {
           return HomeScreen();
+        } else {
+          return LoginScreen();
         }
-        return LoginScreen();
       },
     );
   }

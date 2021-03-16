@@ -16,6 +16,9 @@ class _ErrorPopUpScreenState extends State<ErrorPopUpScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height * 0.5,
             width: MediaQuery.of(context).size.width * 0.5,
+            child: Center(
+              child: Text('Error'),
+            ),
           ),
         ),
       ),

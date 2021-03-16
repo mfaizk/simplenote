@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simplenote/Helpers/themeDataProvider.dart';
@@ -19,7 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: tdp.primarColor,
           elevation: 5.0,
-          onPressed: () {},
+          onPressed: () {
+            FirebaseAuth.instance.signOut();
+          },
           child: FittedBox(
             alignment: Alignment.center,
             fit: BoxFit.fill,
